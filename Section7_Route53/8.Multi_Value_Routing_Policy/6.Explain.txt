@@ -1,0 +1,23 @@
+And so from the web browser perspective if I go to this URL
+
+basically my web browser would have just picked
+
+any of these three IPs at random and just used this one.
+
+So if I just try it out and go here
+
+as we can see my web browser is able to just choose an IP.
+
+And if one of these was unhealthy for whatever reason
+
+then because my web browser has other IPs
+
+it will return as part of the answer
+
+it can try the other ones and see which one would work.
+
+Which is quite cool,
+
+which gives us as well some kind of fault tolerance
+
+but this time on the client side.
