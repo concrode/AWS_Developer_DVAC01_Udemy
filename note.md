@@ -24,17 +24,52 @@ __IAM(Identity and Access Management)__
 
 __EC2__
 
+*What host is right for me?*
+
+> On demand
+> - coming and staying in resort
+whenever we like, we pay the full price
+> 
+> Reserved
+> - like planning ahead and if we plan to
+stay for a long time, we may get a good
+discount
+> 
+> Spot instances
+> - the hotel allows people to bid
+for the empty rooms and the highest bidder
+keeps the rooms. You can get kicked out at any
+time
+>
+> Dedicated Hosts
+> - We book an entire building
+of the resort
+
+*EC2 Pricing*
+
+> EC2 instances prices (per hour) varies based on these parameters:
+> - Region you’re in
+> - Instance Type you’re using
+> - On-Demand vs Spot vs Reserved vs Dedicated Host
+> - Linux vs Windows vs Private OS (RHEL, SLES, Windows SQL)
+>
+> You are billed by the second, with a `minimum of 60 seconds.`
+> 
+> You also pay for other factors such as storage, data transfer, fixed IP public addresses, load balancing
+> 
+> You do `not` pay for the instance if the instance is `stopped`
+
 __Security Group__
 
-> Security Groups are the fundamental of network security in AWS
-> and they control how traffic is allowed into or out of our EC2 Machines.
+Security Groups are the fundamental of network security in AWS
+and they control how traffic is allowed into or out of our EC2 Machines.
 
 *Inbound/Outbound traffic*
 ![](./images/SecurityGroup_Inbound_Outbound_Traffic.png)
 
 > They regulate: 1.Access to Ports 2.Authorised IP ranges – IPv4 and IPv6 3.Control of inbound network (from other to the instance) 4.Control of outbound network (from the instance to other)"
 >
-> __It’s good to maintain one separate security group for SSH access__
+> `It’s good to maintain one separate security group for SSH access`
 >
 > If your application is not accessible (time out), then it’s a security group issue
 > 
@@ -47,20 +82,23 @@ __Security Group__
 __IPV4_IPV6__
 
 *Public IP*
-```
-• Public IP means the machine can be identified on the internet (WWW)
-• Must be unique across the whole web (not two machines can have the same public IP).
-• Can be geo-located easily
-```
+> Public IP means the machine can be identified on the internet (WWW)
+>
+> Must be unique across the whole web (not two machines can have the same public IP).
+> 
+> Can be geo-located easily
 
 *Private IP*
-```
-• Private IP means the machine can only be identified on a private network only
-• The IP must be unique across the private network
-• BUT two different private networks (two companies) can have the same IPs.
-• Machines connect to WWW using a NAT + internet gateway (a proxy)
-• Only a specified range of IPs can be used as private IP
-```
+
+> Private IP means the machine can only be identified on a private network only
+>
+> The IP must be unique across the private network
+> 
+> BUT two different private networks (two companies) can have the same IPs.
+> 
+> Machines connect to WWW using a `NAT` + internet gateway (a proxy)
+> 
+> Only a specified range of IPs can be used as private IP
 
 *NAT(Network address translation)*
 > Translates Private IPs to Public IPs and vice versa
@@ -83,3 +121,12 @@ When we are doing SSH into our EC2 machines:
 
 If your machine is stopped and then started, the public IP can change
 ```
+
+__ENI(Elastic Network Interfaces)__
+
+ENI is a logical component in a VPC that represents a
+virtual network card
+
+*Diagram*
+![](./images/ENI.png)
+
