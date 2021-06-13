@@ -1,4 +1,4 @@
-### AWS Fundenmentals
+## Section3_IAM+EC2+ENI+IP
 __Regions__
 
 __Availability Zones__
@@ -7,4 +7,79 @@ __Availability Zones__
 
 __IAM(Identity and Access Management)__
 
-![Introduction](./images/IAM_Introduction.png)
+*Introduction*
+![](./images/IAM_Introduction.png)
+
+> IAM has a global view
+
+> Permissions are governed by Policies (JSON)
+
+> It’s best to give users the minimal amount of permissions they need to perform their job (least privilege principles)
+
+> One IAM User per PHYSICAL PERSON
+
+> One IAM Role per Application
+
+> IAM credentials should NEVER BE SHARED
+
+__EC2__
+
+__Security Group__
+
+> Security Groups are the fundamental of network security in AWS
+> and they control how traffic is allowed into or out of our EC2 Machines.
+
+*Inbound/Outbound traffic*
+![](./images/SecurityGroup_Inbound_Outbound_Traffic.png)
+
+> They regulate: 1.Access to Ports 2.Authorised IP ranges – IPv4 and IPv6 3.Control of inbound network (from other to the instance) 4.Control of outbound network (from the instance to other)"
+>
+> __It’s good to maintain one separate security group for SSH access__
+>
+> If your application is not accessible (time out), then it’s a security group issue
+> 
+> If your application gives a “connection refused“ error, then it’s an application error or it’s not launched
+> 
+> All inbound traffic is blocked by default
+>
+> All outbound traffic is authorised by default
+
+__IPV4_IPV6__
+
+*Public IP*
+```
+• Public IP means the machine can be identified on the internet (WWW)
+• Must be unique across the whole web (not two machines can have the same public IP).
+• Can be geo-located easily
+```
+
+*Private IP*
+```
+• Private IP means the machine can only be identified on a private network only
+• The IP must be unique across the private network
+• BUT two different private networks (two companies) can have the same IPs.
+• Machines connect to WWW using a NAT + internet gateway (a proxy)
+• Only a specified range of IPs can be used as private IP
+```
+
+*NAT(Network address translation)*
+> Translates Private IPs to Public IPs and vice versa
+![](./images/NAT3.png)
+
+*Elastic IPs - Try to avoid using Elastic IP*
+```
+When you stop and then start an EC2 instance, it can change its public IP. If you need to have a fixed public IP for your instance, you need an Elastic IP. An Elastic IP is a public IPv4 IP you own as long as you don’t delete it.
+```
+
+*Launch EC2*
+```
+By default, your EC2 machine comes with:
+• A private IP for the internal AWS Network
+• A public IP, for the WWW.
+
+When we are doing SSH into our EC2 machines:
+• We can’t use a private IP, because we are not in the same network
+• We can only use the public IP.
+
+If your machine is stopped and then started, the public IP can change
+```
