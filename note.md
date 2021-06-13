@@ -130,3 +130,6 @@ virtual network card
 *Diagram*
 ![](./images/ENI.png)
 
+__AMI_is_Region_Locked__
+
+![](./images/AMI_is_region_locked.png)
