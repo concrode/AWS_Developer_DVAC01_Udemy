@@ -1,3 +1,43 @@
+## Section_IAM
+*Users & Group*
+![](./images/IAM_Users_groups.png)
+
+*Permissions*
+![](./images/IAM_Permissions.png)
+
+*Policy Structure*
+![](./images/IAM_Policy_Structure.png)
+
+*IAM Roles for Services*
+
+`To understand`
+
+we're going to create what's called an IAM Role.So these IAM role will be just like a user,but they are intended to be used not by physical people, but instead they will be used by AWS services.So what does that mean? It's a bit confusing.So for example,we are going to an EC2 Instance create throughout this course,An EC2 Instance is just like a virtual server,and we'll see this in the next section.But so this EC2 Instance may want to
+perform some actions on AWS and to do so,we need to give permissions to our EC2 Instance.To do so, we're going to create an IAM Role and together
+they're going to make one entity.And together, once the EC2 Instance is trying to access some information from AWS,then it will use the IAM Role.
+And if the permission assigned to the IAM Role is correct,then we're going to get access to the call we are trying to make.
+
+![](./images/IAM_Roles_for_AWS_Services.png)
+
+*Summary*
+> Users: mapped to a physical user, has a password for AWS Console
+> 
+> Groups: contains users only
+> 
+> Policies: JSON document that outlines permissions for users or groups
+> 
+> Roles: for EC2 instances or AWS services
+> 
+> Security: MFA + Password Policy
+> 
+> AWS CLI: manage your AWS services using the command-line
+> 
+> AWS SDK: manage your AWS services using a programming language
+> 
+> Access Keys: access AWS using the CLI or SDK
+> 
+> Audit: IAM Credential Reports & IAM Access Advisor
+
 ## Section3_IAM+EC2+ENI+IP
 __Regions__
 
@@ -237,8 +277,7 @@ __Cross-Zone Load Balancing__
 
 __SSL/TLS__
 
-An SSL Certificate allows traffic between your clients and your load balancer
-to be encrypted in transit (in-flight encryption). The load balancer uses an X.509 certificate (SSL/TLS server certificate). You can manage certificates using ACM (AWS Certificate Manager).
+An SSL Certificate allows traffic between your clients and your load balancer to be encrypted in transit (in-flight encryption). The load balancer uses an X.509 certificate (SSL/TLS server certificate). You can manage certificates using ACM (AWS Certificate Manager).
 
 *Server Name Indication(SNI)
 ![](./images/Server_Name_Indication.png)
@@ -311,3 +350,153 @@ We can just use ELB and Target groups to route requests to EC2 instances. With t
 > ELB -> TG - > ASG -> Group of Instances
 
 If you want autoscaling, you can attach a TG to ASG which in turn gets associated to ELB. Now with this setup, you get request routing and autoscaling together. `Real world usecases follow this pattern`. If you detach the target group from the Auto Scaling group, the instances are automatically deregistered from the target group
+
+## Section5_EC2_storage_EBS_EFS
+
+__EBS__
+
+An EBS (Elastic Block Store) Volume is a network drive you can attach
+to your instances while they run and it allows your instances to persist data
+
+It’s locked to an Availability Zone (AZ)
+> An EBS Volume in us-east-1a cannot be attached to us-east-1b
+
+*EBS Volumes come in 4 types*
+> GP2 (SSD): General purpose SSD volume that balances price and performance for a wide variety of workloads -> `Development and test environments`
+> 
+> IO1 (SSD): Highest-performance SSD volume for mission-critical low-latency or highthroughput workloads -> `MongoDB, Cassandra, Microsoft SQL Server, MySQL, PostgreSQL, Oracle`
+> 
+> ST1 (HDD): Low cost HDD volume designed for frequently accessed, throughputintensive workloads -> `Streaming workloads requiring consistent, fast throughput at a low price\Big data, Data warehouses, Log processing\Apache Kafka\Cannot be a boot volume`
+> 
+> SC1 (HDD): Lowest cost HDD volume designed for less frequently accessed workloads -> `Scenarios where the lowest storage cost is important/Cannot be a boot volume`
+
+__EFS(Elastic File System)__
+
+![](./images/EFS.png)
+
+> Use cases: content management, web serving, data sharing, Wordpress
+>
+> Uses security group to control access to EFS
+>
+> `Compatible with Linux based AMI (not Windows)`
+
+*EBS VS EFS - Elastic Block Storage*
+![](./images/EBS_VS_EFS.png)
+
+*EBS VS EFS - Elastic File System*
+![](./images/EBS_VS_EFS_2.png)
+
+## Section6_RDS+Aurora+ElastiCache
+
+__RDS(Relational Database Service)__
+
+*Read Replicas*
+![](./images/RDS_Read_Replicas.png)
+
+*Read Replicas - use cases*
+![](./images/RDS_Read_Replicas_UseCase.png)
+
+*Read Replicas - network cose*
+> In AWS there’s a network cost when data goes from one AZ to another
+>
+> To reduce the cost, you can have your Read Replicas in the same AZ
+
+*Disaster Recovery*
+![](./images/RDS_Disaster_Recovery.png)
+
+*RDS - Encryption*
+> If the master is not encrypted, the read replicas cannot be encrypted
+>
+> SSL certificates to encrypt data to RDS in flight
+> 
+> Provide SSL options with trust certificate when connecting to database
+>
+> To enforce SSL:
+> * PostgreSQL: rds.force_ssl=1 in the AWS RDS Console (Parameter Groups)
+> * MySQL: Within the DB:
+> GRANT USAGE ON *.* TO 'mysqluser'@'%' REQUIRE SSL;
+
+*RDS - IAM Authentication*
+![](./images/RDS_IAM.png)
+
+*RDS Security Summary*
+> Encryption at rest:
+> * Is done only when you first create the DB instance
+> * or: unencrypted DB => snapshot => copy snapshot as encrypted => create DB from snapshot
+> 
+> `Your responsibility:`
+> * Check the ports / IP / security group inbound rules in DB’s SG
+> * In-database user creation and permissions or manage through IAM
+> * Creating a database with or without public access
+> * Ensure parameter groups or DB is configured to only allow SSL connections
+> 
+> AWS responsibility:
+> * No SSH access
+> * No manual DB patching
+> * No manual OS patching
+> * No way to audit the underlying instance
+
+__Aurora__
+> Aurora is a proprietary technology from AWS (not open sourced)
+> 
+> Postgres and MySQL are both supported as Aurora DB (that means your
+drivers will work as if Aurora was a Postgres or MySQL database)
+> 
+> Aurora is “AWS cloud optimized” and `claims 5x performance improvement
+over MySQL on RDS, over 3x the performance of Postgres on RDS`
+> 
+> Aurora storage automatically grows in increments of 10GB, up to 64 TB.
+> 
+> Aurora can have 15 replicas while MySQL has 5, and the replication process
+is faster (sub 10 ms replica lag)
+> 
+> Failover in Aurora is instantaneous. It’s HA (High Availability) native.
+> 
+> `Aurora costs more than RDS (20% more) – but is more efficient`
+>
+> Possibility to authenticate using IAM token (same method as RDS)
+
+*Aurora Global Database (recommended)*
+> 1 Primary Region (read / write)
+>
+> Up to 5 secondary (read-only) regions, replication lag is
+less than 1 second
+> 
+> Up to 16 Read Replicas per secondary region
+> 
+> Helps for decreasing latency
+> 
+> Promoting another region (for disaster recovery) has an
+RTO of < 1 minute
+
+__Amazon ElastiCache__
+
+> ElastiCache is to get managed Redis or Memcached
+> 
+> AWS takes care of OS maintenance / patching, optimizations, setup,
+configuration, monitoring, failure recovery and backups
+> 
+> Using ElastiCache involves heavy application code changes
+
+*DB Cache*
+![](./images/ElastiCache_DB_Cache.png)
+
+*Lazy locading/Cache-Aside/Lazy Population*
+![](./images/ElastiCache_Lazy_Loading.png)
+
+*Write Through - Add or Update cache when database is updated*
+![](./images/ElastiCache_Write_Through.png)
+
+*Final words of wisdom*
+> Lazy Loading / Cache aside is easy to implement and works for many
+situations as a foundation, especially on the read side
+>
+> Write-through is usually combined with Lazy Loading as targeted for the
+queries or workloads that benefit from this optimization
+> 
+> Setting a TTL is usually not a bad idea, except when you’re using Writethrough.Set it to a sensible value for your application
+> 
+> Only cache the data that makes sense (user profiles, blogs, etc…)
+>
+> Quote: `There are only two hard things in Computer Science: cache
+invalidation and naming things`
