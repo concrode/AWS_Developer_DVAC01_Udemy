@@ -1,4 +1,21 @@
-## Section_IAM
+## Section4_IAM+AWS CLI
+__IAM(Identity and Access Management)__
+
+*Introduction*
+![](./images/IAM_Introduction.png)
+
+> IAM has a global view
+>
+> Permissions are governed by Policies (JSON)
+>
+> It’s best to give users the minimal amount of permissions they need to perform their job (least privilege principles)
+>
+> One IAM User per PHYSICAL PERSON
+>
+> One IAM Role per Application
+>
+> IAM credentials should NEVER BE SHARED
+
 *Users & Group*
 ![](./images/IAM_Users_groups.png)
 
@@ -10,10 +27,8 @@
 
 *IAM Roles for Services*
 
-`To understand`
-
-we're going to create what's called an IAM Role.So these IAM role will be just like a user,but they are intended to be used not by physical people, but instead they will be used by AWS services.So what does that mean? It's a bit confusing.So for example,we are going to an EC2 Instance create throughout this course,An EC2 Instance is just like a virtual server,and we'll see this in the next section.But so this EC2 Instance may want to
-perform some actions on AWS and to do so,we need to give permissions to our EC2 Instance.To do so, we're going to create an IAM Role and together
+we're going to create what's called an IAM Role. So these IAM role will be just like a user, but they are intended to be used not by physical people, but instead they will be used by AWS services. So what does that mean? It's a bit confusing. So for example,we are going to an EC2 Instance create throughout this course,An EC2 Instance is just like a virtual server,and we'll see this in the next section.But so this EC2 Instance may want to
+perform some actions on AWS and to do so,we need to give permissions to our EC2 Instance. To do so, we're going to create an IAM Role and together
 they're going to make one entity.And together, once the EC2 Instance is trying to access some information from AWS,then it will use the IAM Role.
 And if the permission assigned to the IAM Role is correct,then we're going to get access to the call we are trying to make.
 
@@ -57,31 +72,95 @@ And if the permission assigned to the IAM Role is correct,then we're going to ge
 > 
 > Audit: IAM Credential Reports & IAM Access Advisor
 
-## Section3_IAM+EC2+ENI+IP
-__Regions__
-
+## Section5_EC2 Fundamentals
 __Availability Zones__
 
 > Each region has many availability zones(usually 3, min is 2, max is 6).
 
-__IAM(Identity and Access Management)__
-
-*Introduction*
-![](./images/IAM_Introduction.png)
-
-> IAM has a global view
-
-> Permissions are governed by Policies (JSON)
-
-> It’s best to give users the minimal amount of permissions they need to perform their job (least privilege principles)
-
-> One IAM User per PHYSICAL PERSON
-
-> One IAM Role per Application
-
-> IAM credentials should NEVER BE SHARED
-
 __EC2__
+*EC2 User Data*
+> It is possible to bootstrap our instances using an EC2 User data script. Bootstrapping means launching commands when a machine starts. That script is only run once at the instance first start
+
+*EC2 instance types*
+
+>AWS has the following naming convention:
+>
+>m5.2xlarge
+> 
+> • m: instance class
+>
+> • 5: generation (AWS improves them over time)
+>
+> • 2xlarge: size within the instance class
+
+*Create an EC2 instance with EC2 User Data to have a website hands on*
+> See Section5 folder -> 1.Create_EC2_1.png ~ 11.7_Install_apache_7_check_result_via_public_IP.png
+
+
+__Security Group__
+
+Security Groups are the fundamental of network security in AWS
+and they control how traffic is allowed into or out of our EC2 Machines.
+
+*Inbound/Outbound traffic*
+![](./images/SecurityGroup_Inbound_Outbound_Traffic.png)
+
+> They regulate: 1.Access to Ports 2.Authorised IP ranges – IPv4 and IPv6 3.Control of inbound network (from other to the instance) 4.Control of outbound network (from the instance to other)"
+>
+> `It’s good to maintain one separate security group for SSH access`
+>
+> If your application is not accessible (time out), then it’s a security group issue
+> 
+> If your application gives a “connection refused“ error, then it’s an application error or it’s not launched
+> 
+> All inbound traffic is `blocked` by default
+>
+> All outbound traffic is `authorised` by default
+
+*SecurityGroup Diagram*
+
+![](./images/SecurityGroup_Diagram.png)
+
+*Referencing other security groups*
+
+![](./images/SecurityGroup_Referencing_other_security_groups.png)
+
+*Classic Ports*
+
+![](./images/ClassicPorts.png)
+
+__SSH__
+
+*SSH EC2*
+> See Section5 folder -> 7.1...png ~ 7.2...png
+
+*SSH on Windows 10+*
+
+![](./images/SSH_In_Windows_Only_User_has_control.png)
+
+*EC2 connect still needs SSH port 22 for security group*
+
+![](./images/EC2_Connect_in_AWS_console.png)
+
+__Access EC2 instance__
+
+*Don't config AWS key and ID in EC2 instance and use IAM for EC2 instance access*
+```
+So we could indeed run aws configure to configure the credentials and specify an Access ID a Secret Access key, and a region name. But this is a really, really, really bad idea. And the reason is that if we run aws configure and enter our personal details onto this EC2 Instance, then anyone else in our accounts could again connect to our EC2 Instance. For example, using EC2 Instance Connect and retrieve the value of these credentials in our instance, which is not what we want.
+This is something that's really, really bad. And so as a rule of thumb, never, ever, ever enter your IAM APA key.
+```
+
+*Access EC2 instance with IAM role*
+
+![](./images/EC2_IAM_1.png)
+![](./images/EC2_IAM_2.png)
+![](./images/EC2_IAM_3.png)
+![](./images/EC2_IAM_4.png)
+
+
+__EC2 Instance Purchasing Options__
+
+![](./images/EC2_Instance_Types.png)
 
 *What host is right for me?*
 
@@ -118,25 +197,6 @@ of the resort
 > 
 > You do `not` pay for the instance if the instance is `stopped`
 
-__Security Group__
-
-Security Groups are the fundamental of network security in AWS
-and they control how traffic is allowed into or out of our EC2 Machines.
-
-*Inbound/Outbound traffic*
-![](./images/SecurityGroup_Inbound_Outbound_Traffic.png)
-
-> They regulate: 1.Access to Ports 2.Authorised IP ranges – IPv4 and IPv6 3.Control of inbound network (from other to the instance) 4.Control of outbound network (from the instance to other)"
->
-> `It’s good to maintain one separate security group for SSH access`
->
-> If your application is not accessible (time out), then it’s a security group issue
-> 
-> If your application gives a “connection refused“ error, then it’s an application error or it’s not launched
-> 
-> All inbound traffic is blocked by default
->
-> All outbound traffic is authorised by default
 
 __IPV4_IPV6__
 
@@ -519,3 +579,9 @@ queries or workloads that benefit from this optimization
 >
 > Quote: `There are only two hard things in Computer Science: cache
 invalidation and naming things`
+
+
+## Note
+> ./images folder has images used in note.md
+>
+> Each section mainly contains Hands-On tutorials and quiz questions
