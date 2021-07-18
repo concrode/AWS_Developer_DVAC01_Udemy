@@ -96,7 +96,6 @@ __EC2__
 *Create an EC2 instance with EC2 User Data to have a website hands on*
 > See Section5 folder -> 1.Create_EC2_1.png ~ 11.7_Install_apache_7_check_result_via_public_IP.png
 
-
 __Security Group__
 
 Security Groups are the fundamental of network security in AWS
@@ -226,7 +225,6 @@ __IPV4_IPV6__
 *Elastic IPs - Try to avoid using Elastic IP*
 > When you stop and then start an EC2 instance, it can change its public IP. If you need to have a fixed public IP for your instance, you need an Elastic IP. An Elastic IP is a public IPv4 IP you own as long as you don’t delete it.
 
-
 *Launch EC2*
 > By default, your EC2 machine comes with:
 > - A private IP for the internal AWS Network
@@ -251,6 +249,55 @@ __AMI_is_Region_Locked__
 
 ![](./images/AMI_is_region_locked.png)
 
+## Section6_EC2_Instance_Storage
+__EBS__
+
+An EBS (Elastic Block Store) Volume is a network drive you can attach
+to your instances while they run and it allows your instances to persist data
+
+It’s locked to an Availability Zone (AZ)
+> An EBS Volume in us-east-1a cannot be attached to us-east-1b
+
+*EBS Volumes come in 4 types*
+> GP2 (SSD): General purpose SSD volume that balances price and performance for a wide variety of workloads -> `Development and test environments`
+> 
+> IO1 (SSD): Highest-performance SSD volume for mission-critical low-latency or highthroughput workloads -> `MongoDB, Cassandra, Microsoft SQL Server, MySQL, PostgreSQL, Oracle`
+> 
+> ST1 (HDD): Low cost HDD volume designed for frequently accessed, throughputintensive workloads -> `Streaming workloads requiring consistent, fast throughput at a low price\Big data, Data warehouses, Log processing\Apache Kafka\Cannot be a boot volume`
+> 
+> SC1 (HDD): Lowest cost HDD volume designed for less frequently accessed workloads -> `Scenarios where the lowest storage cost is important/Cannot be a boot volume`
+
+__AMI__
+
+Amazon Machine Image
+![](./images/AMI_Overview.png)
+
+
+
+__EFS(Elastic File System)__
+
+![](./images/EFS.png)
+
+> Use cases: content management, web serving, data sharing, Wordpress
+>
+> Uses security group to control access to EFS
+>
+> `Compatible with Linux based AMI (not Windows)`
+
+*EBS VS EFS - Elastic Block Storage*
+![](./images/EBS_VS_EFS.png)
+
+*EBS VS EFS - Elastic File System*
+![](./images/EBS_VS_EFS_2.png)
+
+
+
+
+
+
+
+
+## =========================================================================
 ## Section4_ELB+ASG+Scalability
 __High Availability & Scalability For EC2__
 > Vertical Scaling: Increase instance size (= scale up / down)
@@ -430,40 +477,6 @@ We can just use ELB and Target groups to route requests to EC2 instances. With t
 
 If you want autoscaling, you can attach a TG to ASG which in turn gets associated to ELB. Now with this setup, you get request routing and autoscaling together. `Real world usecases follow this pattern`. If you detach the target group from the Auto Scaling group, the instances are automatically deregistered from the target group
 
-## Section5_EC2_storage_EBS_EFS
-
-__EBS__
-
-An EBS (Elastic Block Store) Volume is a network drive you can attach
-to your instances while they run and it allows your instances to persist data
-
-It’s locked to an Availability Zone (AZ)
-> An EBS Volume in us-east-1a cannot be attached to us-east-1b
-
-*EBS Volumes come in 4 types*
-> GP2 (SSD): General purpose SSD volume that balances price and performance for a wide variety of workloads -> `Development and test environments`
-> 
-> IO1 (SSD): Highest-performance SSD volume for mission-critical low-latency or highthroughput workloads -> `MongoDB, Cassandra, Microsoft SQL Server, MySQL, PostgreSQL, Oracle`
-> 
-> ST1 (HDD): Low cost HDD volume designed for frequently accessed, throughputintensive workloads -> `Streaming workloads requiring consistent, fast throughput at a low price\Big data, Data warehouses, Log processing\Apache Kafka\Cannot be a boot volume`
-> 
-> SC1 (HDD): Lowest cost HDD volume designed for less frequently accessed workloads -> `Scenarios where the lowest storage cost is important/Cannot be a boot volume`
-
-__EFS(Elastic File System)__
-
-![](./images/EFS.png)
-
-> Use cases: content management, web serving, data sharing, Wordpress
->
-> Uses security group to control access to EFS
->
-> `Compatible with Linux based AMI (not Windows)`
-
-*EBS VS EFS - Elastic Block Storage*
-![](./images/EBS_VS_EFS.png)
-
-*EBS VS EFS - Elastic File System*
-![](./images/EBS_VS_EFS_2.png)
 
 ## Section6_RDS+Aurora+ElastiCache
 
