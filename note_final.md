@@ -290,15 +290,13 @@ __EFS(Elastic File System)__
 *EBS VS EFS - Elastic File System*
 ![](./images/EBS_VS_EFS_2.png)
 
+__EBS vs EFS vs Instance Storage__
 
+```
+And again, what you remember is that for EFS,you do get billed only for what you use on your EFS,whereas for EBS, you have to provision in advance a size that you know for EBS drive,and you pay for the provision capacity not the actual use capacity.So, now you should remember,EFS is really for a network file system to be mounted across multiple instances.EBS is for a network volume,then it should be mounted only on one instance and it is locked to an AZ.An Instance Store is to get the maximum amount of IO onto an EC2 instance,but is something you lose, if you lose that instance,so it is an ephemeral drive, okay.
+```
 
-
-
-
-
-
-## =========================================================================
-## Section4_ELB+ASG+Scalability
+## Section7_ELB+ASG
 __High Availability & Scalability For EC2__
 > Vertical Scaling: Increase instance size (= scale up / down)
 > - From: t2.nano - 0.5G of RAM, 1 vCPU
@@ -311,6 +309,12 @@ __High Availability & Scalability For EC2__
 > High Availability: Run instances for the same application across multi AZ (at least 2 AZs)
 > - Auto Scaling Group multi AZ
 > - Load Balancer multi AZ
+
+__EC2 should only be accessed from LB__
+
+```
+3.2_Set_EC2_Security_group_can_only_be_accessed_by_ELB_security_group.png
+```
 
 __Load Balancer__
 
@@ -478,6 +482,9 @@ We can just use ELB and Target groups to route requests to EC2 instances. With t
 If you want autoscaling, you can attach a TG to ASG which in turn gets associated to ELB. Now with this setup, you get request routing and autoscaling together. `Real world usecases follow this pattern`. If you detach the target group from the Auto Scaling group, the instances are automatically deregistered from the target group
 
 
+
+
+## =========================================================================
 ## Section6_RDS+Aurora+ElastiCache
 
 __RDS(Relational Database Service)__
