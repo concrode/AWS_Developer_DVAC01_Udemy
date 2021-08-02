@@ -482,6 +482,12 @@ We can just use ELB and Target groups to route requests to EC2 instances. With t
 If you want autoscaling, you can attach a TG to ASG which in turn gets associated to ELB. Now with this setup, you get request routing and autoscaling together. `Real world usecases follow this pattern`. If you detach the target group from the Auto Scaling group, the instances are automatically deregistered from the target group
 
 
+## Section9 Route
+__DNS Records TTL (Time to Live)__
+
+TTL is mandatory for each DNS record
+
+
 
 
 ## =========================================================================
