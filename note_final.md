@@ -516,6 +516,28 @@ __3 Tier solution architecture__
 
 ## Section11 S3
 
+__Encryption in transit(SSL/TLS)__
+
+* HTTPS is mandatory for SSE-C (server-side encryption using data keys fully managed by the customer outside of AWS)
+* Encryption in flight is also called SSL/TLS
+
+
+__Bucket Policies__
+
+{
+    "Version": "2020-10-17",
+    "Statement": [
+        {
+            "Sid": "PublicRead",
+            "Effect": "Allow",
+            "Principal": "*"
+        }
+    ]
+}
+
+```
+A principal is a person or application that can make a request for an action or operation on an AWS resource. The principal is authenticated as the AWS account root user or an IAM entity to make requests to AWS. As a best practice, do not use your root user credentials for your daily work. Instead, create IAM entities (users and roles). You can also support federated users or programmatic access to allow an application to access your AWS account.
+```
 
 
 ## =========================================================================
