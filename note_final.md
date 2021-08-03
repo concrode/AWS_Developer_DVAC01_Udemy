@@ -487,6 +487,11 @@ __DNS Records TTL (Time to Live)__
 
 TTL is mandatory for each DNS record
 
+__Latency Routing Policy__
+>Super helpful when latency of users is a priority
+>
+>Latency is evaluated in terms of user to designated AWS Region
+
 
 
 
