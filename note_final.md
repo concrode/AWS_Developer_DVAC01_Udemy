@@ -482,7 +482,7 @@ We can just use ELB and Target groups to route requests to EC2 instances. With t
 If you want autoscaling, you can attach a TG to ASG which in turn gets associated to ELB. Now with this setup, you get request routing and autoscaling together. `Real world usecases follow this pattern`. If you detach the target group from the Auto Scaling group, the instances are automatically deregistered from the target group
 
 
-## Section9 Route
+## Section9 Route53
 __DNS Records TTL (Time to Live)__
 
 TTL is mandatory for each DNS record
@@ -492,6 +492,29 @@ __Latency Routing Policy__
 >
 >Latency is evaluated in terms of user to designated AWS Region
 
+## Section10 VPC
+
+__Internet Gateway__
+
+* It helps our VPC instances connect with the internet
+* Public Subnets have a route to the
+internet gateway.
+
+`NAT Gateways (AWS-managed) &
+NAT Instances (self-managed)` allow
+your instances in your Private Subnets
+to access the internet while remaining
+private
+
+![](./images/VPC_internetGateway_NATGateways.png)
+
+__VPC Closing Comments__
+![](./images/VPC_Summary.png)
+
+__3 Tier solution architecture__
+![](./images/VPC_3_tier_architecture.png)
+
+## Section11 S3
 
 
 
