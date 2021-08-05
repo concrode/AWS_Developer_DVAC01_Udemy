@@ -549,11 +549,39 @@ A principal is a person or application that can make a request for an action or 
 
 *ECS task placement and constraints*
 
-steps:
+Steps:
 
-cluster -> task placement, then define strategy and constraint
+- cluster -> task placement, then define strategy and constraint
 
 *Auto Scaling*
+
+Steps:
+
+- cluster -> capacity provider -> create
+
+- create new service -> add capacity provider -> placement(random) -> config Auto Scaling
+-> choose IAM role ->  create
+
+## Setion16 elastic beanstalk
+
+*environment*
+
+Steps:
+
+- elastic beanstalk -> platform, then nodejs -> create application
+
+- Select beanstalk env -> Events -> choose INFO -> s3, security group, elastic ip, ec2 instance created along with beanstalk
+
+- beanstalk env for this application created -> beanstalk application created
+
+- select application -> select env tier -> web server env -> enter appProd -> nodejs as platform -> configure more options -> modify software if you want -> load balancer can't be changed later on
+
+
+*deployment modes*
+
+Steps: 
+
+
 
 
 
