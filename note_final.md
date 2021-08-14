@@ -577,15 +577,225 @@ Steps:
 - select application -> select env tier -> web server env -> enter appProd -> nodejs as platform -> configure more options -> modify software if you want -> load balancer can't be changed later on
 
 
-*deployment modes*
+*docker as beanstalk platform*
 
 Steps: 
 
+- Elastic Beanstalk -> applications -> environment -> platform, then docker, then multi-docker -> sample application 
+
+- find website containing -> samples/docker-multicontainer-v2.zip
+
+- Dockerrun.aws.json file is used to generate the ECS task definition
+
+## Setion17 CICD
+
+*codeCommit* like github
+
+Steps:
+
+- codeCommit -> create repo -> upload a file -> PR is merge feature branch to main branch
+
+- create trigger for repo -> send SNS 
 
 
+*Pipeline*
+
+Steps:
+
+- developer tools -> codePipeline -> pipelines -> create new pipelines
+
+- Detection options: Use Amazon CloudWatch Events to automatically start my pipeline when a change occurs
+
+- stages can have multiple action groups
+
+- deploy stage in prod -> 1.manual approval -> 2.deploy to stage
+
+*codebuild*
+
+- buildspec.yml file must be at the root of your code
+
+- To enable VPC, code build -> build projects -> MyBuildProject -> Edit Environment -> additional configuration
 
 
+## Setion19 cloudwatch
 
+***Exam Note:***
+
+-  I said, the metric filter is ***not retroactive***. So we need to make this Metric Filter work, and for this, very simply, I'm gonna go into MyFirstBeanstalk-environment, and then I'm going to do an environment action,
+and I went to restart the app servers, and this should trigger a lot more logs
+
+- if you see CloudWatch Events or EventBridge, it's sort of the same thing except EventBridge will have some added capability, such as third-party Software as a Service applications and Custom event buses as well as Schema Registry.
+
+- So a very common question is,"Hey, my X-Ray application works on my computer
+when I test locally, but doesn't work on my EC2 machine.Why?" Well, the answer is probably because on your machine you're running the X-Ray daemon, but when you deploy it to your EC2 Instance, it's not running the X-Ray daemon and therefore, X-Ray doesn't see your calls.
+
+- Now, very important.Annotations is when we add some key value pair data to index our traces and use with filters. So annotations is are extremely important in X-ray. If you want to be able to search your traces with new indexes versus metadata.
+
+- Metadata is key value pairs, as well. But these this time they're not index. Okay, so your annotations are indexed and you can use them to search with filters, whereas metadata are not indexed and you cannot use them for searching.
+
+- And the cool thing about it is that if you change your sampling rules in the X-Ray console, you don't have to restart your applications. You don't have to do anything with your X-Ray in SDK. Automatically the daemon, the extra daemon knows how to get visa something rules and correctly send the right amount of data into the X-Ray service.
+
+- And so if you see x-ray read and write APIs at the exam, you should be prepared to know when to use which and why.
+
+- Super simple to enable X-Ray with Beanstalk.Just click enable x-ray and EC2 instance will have x-ray IAM correspondingly.
+
+- But remember, the take away from this slide is that you need to map the Container Port of the X-Ray Daemon to 2000 UDP. Then, you need to set an environment variable, called X-Ray Daemon address. And finally, you need to link these two containers from a networking standpoint.
+
+- cloudTrail and cloudwatch hands-on tutorial are really good
+
+- CloudWatch is really just for overall metrics, X-Ray is a lot more granular,
+trace-oriented type of service and CloudTrail is going to be for auditing API calls.
+
+
+## Setion20 SQS, SNS & Kinesis
+
+***Exam Note:***
+
+- Simple Notification Service
+
+- Kinesis Data Streams (Collecting streaming data with a data stream)
+
+- Kinesis Data Firehose (Process and deliver streaming data with data delivery stream)
+
+- Kinesis Data Analytics (Analyze streaming data with data analytics application)
+
+- Kinesis Client Library (KCL is a java library that helps read data from KDS)
+
+- So anytime you see application decoupling in your exam, think about Amazon SQS.
+
+- Why do we have dead letter queues? Well we have them for debugging.
+
+- So why do we do Long Polling? Well, we do Long Polling because we are doing less API calls into the SQS Queue.
+
+- So you will see in the exam some questions maybe telling you that the consumer is doing too many calls into the SQS Queue, and that is costing you money and CPU cycles, and maybe increasing the latency, then Long Polling is going to be the option.
+
+-  we can have SQS FIFO queues as a subscribers of the FIFO SNS topic.
+
+- We can set up an access policy and the excess policy is going to define who
+and what can right to the SNS topics. So this is similar to an S3 bucket policy
+and this is similar to also an SQS access to policy,
+
+- Also, you need to make sure your partition key is very well distributed to avoid the concept of a hot partition, because then you will have one shard that's going to have more throughputs than the others and they will bring some imbalance.
+
+- But if we start over-producing into a shard we're going to get an exception
+because we are going over the provision throughput. So we get the ProvisionedThroughputExceeded exception. And so the solution to this is number one, to make sure you are using a highly distributed partition key because if not, then this error will happen a lot. And we need to implement retries with exponential backoff to ensure that we can retry these exceptions and this is something that comes up at the exam. And finally, you need to scale the shard,
+maybe it's called shard-splitting to split a shard into and augment the throughputs
+
+- So there're three kinds of destinations with Kinesis Data Firehose. The number one category is AWS destinatios and you need to know them by heart.
+So the first one is Amazon S3.So you can write all your data into Amazon S3.
+The second one is Amazon Redshift which is a warehousing database
+and to do so it first writes the data into Amazon history and then Kinesis Data Firehose will issue a copy command and this copy command is going to copy data from Amazon history into Amazon Redshift and the last destination on AWS
+is called Amazon ElasticSearch. There're also some third party partner destinations.So Kinesis Data Firehose can send data into Datadog, Splunk, New Relic, MongoDB and this list can get bigger and bigger over time.
+
+- Write throughput: 1 MB/sec or 1000 records/sec per shard
+
+- sometimes is going to be better to use SQS FIFO. If you want to have a dynamic number of consumers based on the number of group IDs, and sometimes it could be better to use Kinesis Data Stream if you have say 10,000 trucks and you need to send it lot of data, and also have data ordering per shard
+
+
+## Setion21 Serverless: Lambda
+
+***Exam Note:***
+
+- So the exam, if they ask you to run a container on Lambda, unless that container does implement the Lambda runtime API, you will run to run that container on ECS or Fargate.
+
+- it's usually very, very cheap to run your code on Lambda.
+
+- So it's really cool because that means that as we have more load automatically Lambda will scale with our load. And that is a whole power
+of using Lambda as a compute platform.
+
+- lambda integration with ALB, then The Lambda function must be registered in a target group
+
+- When you enable multi-value headers, HTTP headers and query string parameters that are sent with multiple values are shown as arrays within the
+AWS Lambda event and response objects
+
+- you can use Lambda@Edge: deploy Lambda functions alongside your CloudFront CDN to run a global lambda
+
+- Eventbridge rule -> trigger every 1 hour -> Lambda function perform a task
+
+- If you want to ensure that an event notification is sent for every successful write, you can enable versioning on your bucket.
+
+- Kinesis Data Streams & DynamoDB Streams:
+  -  One Lambda invocation per stream shard
+  - If you use parallelization, up to 10 batches processed per shard simultaneously
+  
+- SQS Standard:
+  - Lambda adds 60 more instances per minute to scale up
+  - Up to 1000 batches of messages processed simultaneously
+
+- SQS FIFO:
+  - Messages with the same GroupID will be processed in order
+  - The Lambda function scales to the number of active message groups
+
+- AWS recommends you use destinations instead of DLQ now (but both can be used at the same time)
+
+- And let's see let's refresh this. So yes, my S3-failure does not have any messages yet. And do you know why? You should know by now. But because S3 invoking my lambda function is an asynchronous type of invocation. Then if we go into the configuration remember, and go to the asynchronous invocation,
+well we have two retry attempts that are going to be running. So these retry attempts are going to be run. And then once the retry attempts are run, then the destination will be invoked as a failure.
+
+- When you use an event source mapping to invoke your function, Lambda
+uses the execution role to read event data.
+
+- resource-based policy
+
+- lambda in vpc, then Lambda will create an ENI (Elastic
+Network Interface) in your subnets by using AWSLambdaVPCAccessExecutionRole
+
+- Deploying a Lambda function in a public subnet does not give it internet access or a public IP
+
+- If your application is CPU-bound (computation heavy), increase RAM
+
+-  any interval of an execution between zero seconds and 15 minutes is a good use case for Lambda. Anything above 15 minutes is not a good use case for Lambda. And is something maybe that's going to be better for fargate, ECS or EC2.
+
+- /tmp directory to download a big file, Max size is 512MB
+
+- Can set a “reserved concurrency” at the function level (=limit)
+
+- what you get to remember out of this slide is that the concurrency limit applies to all the functions in your accounts, and so you have to be careful because if one function goes over the limit, it's possible that your other functions get throttled.
+
+- Reserved and Provisioned Concurrency
+
+- Upload the zip straight to Lambda if less than 50MB, else to S3 first
+
+- cloudformation
+    - Use the Code.ZipFile property
+    - You cannot include function dependencies with inline functions
+
+- If you update the code in S3, but don’t update S3Bucket, S3Key or S3ObjectVersion, CloudFormation won’t update your function
+
+- Can create your own image as long as it implements the Lambda Runtime API
+
+- Aliases cannot reference aliases
+
+- We can define a “dev”, ”test”, “prod” aliases and have them point at different lambda versions
+
+- Avoid using recursive code, never have a Lambda function call itself
+
+
+## Setion22 DynamoDB
+
+***Exam Note:***
+
+- partition key, sort key
+
+- Table must have provisioned read and write capacity units
+    - Read Capacity Units (RCU): throughput for reads
+    - Write Capacity Units (WCU): throughput for writes
+
+- One write capacity unit represents one write per second for an item up
+to 1 KB in size.
+
+- we write 6 objects per second of 4.5 KB each
+  - We need 6 * 5 = 30 WCU (4.5 gets rounded to the upper KB)
+
+- One read capacity unit represents one strongly consistent read per second, or
+two eventually consistent reads per second, for an item up to 4 KB in size.
+
+- 10 strongly consistent reads per seconds of 6 KB each
+  - We need 10 * 8 KB / 4 = 20 RCU (we have to round up 6 KB to 8 KB)
+
+- And so if you get a question exam and it's saying "We need to wipe every day, a whole table, and delete all data, should you DeleteItem or DeleteTable?"
+well, it is much better and much more cost-efficient to use DeleteTable and maybe recreate the table afterwards
+
+- if you want to only get certain attributes in the results, you can use something called a ProjectionExpression. Super important. ProjectionExpression allows you to say what you want to retrieve out of DynamoDB if you don't want to retrieve the full item. And this helps you save in network bandwidth.
 
 
 ## =========================================================================
