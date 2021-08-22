@@ -797,6 +797,8 @@ well, it is much better and much more cost-efficient to use DeleteTable and mayb
 
 - if you want to only get certain attributes in the results, you can use something called a ProjectionExpression. Super important. ProjectionExpression allows you to say what you want to retrieve out of DynamoDB if you don't want to retrieve the full item. And this helps you save in network bandwidth.
 
+- 
+
 
 ## =========================================================================
 ## Section6_RDS+Aurora+ElastiCache
