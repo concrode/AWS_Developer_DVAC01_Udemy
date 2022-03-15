@@ -247,7 +247,12 @@ ENI is a logical component in a VPC that represents a
 virtual network card
 
 *Diagram*
+
+A common use case for ENIs is the creation of management networks. This allows you to have public-facing applications like web servers in a public subnet but lock down SSH access down to a private subnet on a secondary network interface. In this scenario, you would connect using a VPN to the private management subnet, then administrate your servers as usual.
+
 ![](./images/ENI.png)
+
+In this diagram, the subnet on the left is the public subnet, which communicates with the internet over the Internet Gateway for the VPC. The subnet on the right is the private management subnet, which can only be accessed in this example by the AWS Direct Connect gateway, which allows the on-premises network to handle authentication, and simply extends that network into the cloud. You could also use AWS Client VPN, which will run a VPN server that can be accessed with private key credentials.
 
 __AMI_is_Region_Locked__
 
